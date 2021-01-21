@@ -45,5 +45,5 @@ class Configuration(models.Model):
         VISIBLE = 1
 
     participants_limit = models.PositiveIntegerField()
-    competition_status = models.IntegerField(choices=CompetitionStatus.choices)
-    ranking_visibility = models.IntegerField(choices=RankingVisibility.choices)
+    competition_status = models.IntegerField(choices=CompetitionStatus.choices, default=CompetitionStatus.INACTIVE)
+    ranking_visibility = models.IntegerField(choices=RankingVisibility.choices, default=RankingVisibility.VISIBLE)
