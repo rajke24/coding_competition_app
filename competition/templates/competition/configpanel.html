@@ -13,20 +13,24 @@
   </head>
   <body>
     <div class="wrapper">
+      <h1>configuration panel</h1>
       <div class="control-panel">
-        <h2>Active</h2>
-        <label class="switch">
-            <input type="checkbox">
-            <span class="slider"></span>
-        </label>
-        <h2>ranking visibility</h2>
-        <label class="switch">
-            <input type="checkbox">
-            <span class="slider"></span>
-        </label>
+        <form id="config-form" method="POST">
+          {% csrf_token %}
+          <h2>Active</h2>
+          <label class="switch">
+              <input type="checkbox" name="competition_status" {% if configuration.competition_status == 1 %} checked="checked" {% endif %}>
+              <span class="slider"></span>
+          </label>
+          <h2>ranking visibility</h2>
+          <label class="switch">
+              <input type="checkbox" name="ranking_visibility" {% if configuration.ranking_visibility == 1 %} checked="checked" {% endif %}>
+              <span class="slider"></span>
+          </label>
+        </form>
         <div>
-            <button class="btn cancel-btn">cancel</button>
-            <button class="btn accept-btn">accept</button>
+          <button class="btn cancel-btn" onclick="location.href = '/'">cancel</button>
+          <button class="btn accept-btn" type="submit" form="config-form">accept</button>
         </div>
       </div>
     </div>

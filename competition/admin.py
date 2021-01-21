@@ -6,4 +6,8 @@ admin.site.register(Task)
 admin.site.register(Test)
 admin.site.register(Solution)
 admin.site.register(SolutionTestResult)
-admin.site.register(Configuration)
+
+@admin.register(Configuration)
+class ConfigurationAdmin(admin.ModelAdmin):
+  def has_add_permission(self, *args, **kwargs):
+    return not Configuration.objects.exists()

@@ -6,5 +6,5 @@ from competition.views import configpanel
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', configpanel, name='config-panel')
+    path('config-panel/', configpanel, name='config-panel')
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

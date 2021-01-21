@@ -5,8 +5,8 @@
     --ghost-white: #F8F8FF;
     --light-orange: #e8b961;
 
-    --light-shadow: 0 5px 15px rgba(0, 0, 0, 0.6)
-    --dark-shadow: 0 5px 15px rgba(0, 0, 0, 0.2)
+    --dark-shadow: 0 5px 15px rgba(0, 0, 0, 0.6);
+    --light-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 * {
@@ -54,22 +54,29 @@ h4 {
     color: var(--ghost-white);
 }
 
-.control-panel {
+.control-panel{
     width: 50%;
     height: 40%;
     background: var(--ghost-white);
-    box-shadow: var(--dark-shadow);
+    box-shadow: var(--light-shadow);
     display: flex;
     flex-direction: column;
     align-items: center;
     color: #131C2E;
     padding: 30px 40px;
+    margin-top: 20px;
+    margin-bottom: 70px;
+}
+.control-panel form {
+  display: flex;
+  place-items: center;
+  flex-direction: column;
 }
 .switch {
   position: relative;
   display: inline-block;
   width: 45px;
-  height: 24px;
+  height: 26px;
   margin-bottom: 20px;
 }
 .switch input {
@@ -95,7 +102,7 @@ h4 {
   height: 18px;
   width: 18px;
   left: 4px;
-  bottom: 3px;
+  bottom: 4px;
   background-color: white;
   -webkit-transition: .4s;
   transition: .4s;
@@ -119,6 +126,7 @@ input:checked + .slider:before {
     border-radius: 5px;
     font-size: 0.875rem;
     transition: .4s;
+    outline: none;
 }
 .accept-btn {
     border: 2px solid var(--light-blue);
