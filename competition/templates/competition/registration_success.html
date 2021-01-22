@@ -1,0 +1,29 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link
+            rel="stylesheet"
+            href="{% static 'competition/main.css' %}"
+            type="text/css"
+    />
+    <title>Document</title>
+</head>
+<body>
+<div class="wrapper">
+    <div class="panel" style="text-align: center;">
+        <div>
+            <h1>Pomyślnie Zarejestrowano</h1>
+
+            <p>Zarejestrowano drużynę.</p>
+            <strong>Login drużyny:</strong> {{ team.team_as_user.username }}
+            <div style="margin-top: 40px">
+                <button class="btn accept-btn" onclick="location.href = '/'">Wróć do strony głównej</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,107 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link
+            rel="stylesheet"
+            href="{% static 'competition/main.css' %}"
+            type="text/css"
+    />
+    <title>Document</title>
+
+</head>
+<div class="register-wrapper">
+    <h1>Rejestracja</h1>
+    <div class="panel register-panel">
+        <form method="POST">
+            {% csrf_token %}
+            <div>
+                <div>
+                    <h1>Dane zespołu</h1>
+                </div>
+
+                <div class="team-form-double-outer">
+                    <div class="team-form-double-inner">
+                        {{ team.guardian_first_name.label_tag }} {{ team.guardian_first_name }} {{ team.guardian_first_name.errors }}
+                    </div>
+
+                    <div class="team-form-double-inner">
+                        {{ team.guardian_last_name.label_tag }} {{ team.guardian_last_name }} {{ team.guardian_last_name.errors }}
+                    </div>
+                </div>
+
+                <div>
+                    <div class="school-name-div">
+                        {{ team.school_name.label_tag }} {{ team.school_name }} {{ team.school_name.errors }}
+                    </div>
+                </div>
+
+                <div class="team-form-double-outer">
+                    <div class="team-form-double-inner">
+                        {{ team.password.label_tag }} {{ team.password }} {{ team.password.errors }}
+                    </div>
+
+                    <div class="team-form-double-inner">
+                        {{ team.password_confirm.label_tag }} {{ team.password_confirm }} {{ team.password_confirm.errors }}
+                    </div>
+                </div>
+            </div>
+            <div><h1>Dane członków</h1></div>
+
+            <label for="participants_spinner">Liczba uczestników</label>
+            <input id="participants_spinner" name="participants_spinner" type="number" min="1" max="3" value="3"
+                   step="1" onkeydown="return false"
+                   onchange="changeDisabledForParticipantDivs()"/>
+            <br>
+            <div class="participant-form-outer">
+                {% for participant in participants %}
+                    <div id="participant_{{ forloop.counter }}">
+                        Uczestnik nr. {{ forloop.counter }}
+                        {% for field in participant.visible_fields %}
+                            <div class="participant-form-inner">
+                                {{ field.label_tag }}
+                                {{ field }}
+                                {{ field.errors }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
+            <br>
+            <input class="btn accept-btn" id="submit-button" type="submit" value="ZATWIERDŹ"/>
+            <label for="submit-button">Pola oznaczone * są wymagane</label>
+        </form>
+    </div>
+</div>
+<script>
+    function changeDisabledForParticipantDivs() {
+        const value = parseInt(document.getElementById("participants_spinner").value);
+        if (value === 1) {
+            changeDivDisabled(document.getElementById("participant_2"), true);
+            changeDivDisabled(document.getElementById("participant_3"), true);
+        } else if (value === 2) {
+            changeDivDisabled(document.getElementById("participant_2"), false);
+            changeDivDisabled(document.getElementById("participant_3"), true);
+        } else if (value === 3) {
+            changeDivDisabled(document.getElementById("participant_2"), false);
+            changeDivDisabled(document.getElementById("participant_3"), false);
+        }
+    }
+
+    function changeDivDisabled(div, newValue) {
+        const nodes = div.getElementsByTagName("input");
+        for (let i = 0; i < nodes.length; i++) {
+            nodes[i].disabled = newValue;
+        }
+        const nodesLabels = div.getElementsByTagName("label");
+        const color = (newValue === true) ? "gray" : "#131C2E";
+        for (let i = 0; i < nodesLabels.length; i++) {
+            nodesLabels[i].style.color = color;
+        }
+    }
+</script>
+</body>
+</html>
+

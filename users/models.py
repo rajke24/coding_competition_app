@@ -9,17 +9,17 @@ class Team(models.Model):
     is_disqualified = models.BooleanField(default=False, verbose_name="Czy zdyskwalifkowany")
     guardian_first_name = models.CharField(max_length=64, blank=True, verbose_name="Imię opiekuna")
     guardian_last_name = models.CharField(max_length=64, blank=True, verbose_name="Nazwisko opiekuna")
-    school_name = models.CharField(max_length=100, verbose_name="Nazwa szkoły")
+    school_name = models.CharField(max_length=100, verbose_name="Nazwa szkoły *")
 
     def __str__(self):
         return self.team_as_user.username
 
 
 class Participant(models.Model):
-    email = models.EmailField(primary_key=True, verbose_name="Adres e-mail")
-    first_name = models.CharField(max_length=64, verbose_name="Imię")
-    last_name = models.CharField(max_length=64, verbose_name="Nazwisko")
-    age = models.IntegerField(verbose_name="Wiek", validators=[
+    email = models.EmailField(primary_key=True, verbose_name="Adres e-mail *")
+    first_name = models.CharField(max_length=64, verbose_name="Imię *")
+    last_name = models.CharField(max_length=64, verbose_name="Nazwisko *")
+    age = models.IntegerField(verbose_name="Wiek *", validators=[
         MinValueValidator(14, "Wiek musi być pomiędzy 14 a 99"),
         MaxValueValidator(99, "Wiek musi być pomiędzy 14 a 99")
     ])
