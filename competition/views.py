@@ -80,9 +80,16 @@ def register(request):
 def __are_forms_valid(team_form, participant_forms, team_members):
     if not team_form or not team_form.is_valid():
         return False
+    team_members_emails = []
     for i in range(team_members):
         if not participant_forms[i] or not participant_forms[i].is_valid():
             return False
+        else:
+            member_email = participant_forms[i].cleaned_data['email']
+            if member_email in team_members_emails:
+                participant_forms[i].add_error('email', 'Ten email jest już używany przez innego członka zespołu')
+                return False
+            team_members_emails.append(member_email)
     return True
 
 
