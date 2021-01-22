@@ -10,4 +10,5 @@ urlpatterns = [
     path('config-panel/', configpanel, name='config-panel'),
     path('register/', views.register, name='registration'),
     path('register/limit', views.no_team_slots_available, name='register-no-team-slots-available'),
+    path('solution', views.send_solution, name='send-solution')
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

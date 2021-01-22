@@ -55,3 +55,8 @@ class TeamForm(forms.ModelForm):
         if password_data != password_confirm_data:
             self.add_error('password_confirm', 'Hasła się nie zgadzają')
         return cleaned_data
+
+
+class SolutionForm(forms.Form):
+    solution = forms.CharField(widget=forms.Textarea)
+

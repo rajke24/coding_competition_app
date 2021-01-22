@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from competition.forms import ParticipantForm, TeamForm, ConfigPanelForm
+from competition.forms import ParticipantForm, TeamForm, ConfigPanelForm, SolutionForm
 import random
 
 from competition.models import Configuration
@@ -125,3 +125,9 @@ def __save_participants(participant_forms, team_members, team):
 def __recreate_empty_forms(participant_forms, team_members):
     for i in range(team_members, 3):
         participant_forms[i] = ParticipantForm(prefix="participant_".format(i))
+
+
+def send_solution(request):
+    if request.method == 'POST':
+        return HttpResponse(request.POST['solution'])
+    return render(request, 'competition/send_solution.html', context={'solution_form': SolutionForm()})
