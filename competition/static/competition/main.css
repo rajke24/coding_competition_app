@@ -30,6 +30,9 @@ body {
             var(--light-blue)
     );
 }
+html {
+    scroll-behavior: smooth;
+}
 
 a {
     text-decoration: none;
@@ -51,7 +54,7 @@ h4 {
 
 .wrapper {
     width: 100%;
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -69,7 +72,7 @@ h4 {
     color: #131C2E;
     padding: 30px 40px;
     margin-top: 20px;
-    margin-bottom: 70px;
+    margin-bottom: 60px;
 }
 
 .panel form {
@@ -85,8 +88,13 @@ h4 {
 
 .register-panel {
     width: 80%;
+    text-align: center;
 }
 
+.ranking-panel {
+    width: 80%;
+    height: 550px;
+}
 
 .switch {
     position: relative;
@@ -148,6 +156,7 @@ input:checked + .slider:before {
     font-size: 0.875rem;
     transition: .4s;
     outline: none;
+    width: 100px;
 }
 
 .accept-btn {
@@ -185,48 +194,36 @@ input:checked + .slider:before {
     }
 }
 
-.register-wrapper {
-    height: 100%;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: transparent;
-    flex-direction: column;
-    color: var(--ghost-white);
-    text-align: center;
-}
-
-.register-wrapper label {
+.register-panel label {
     display: block;
     margin: 5px 5px;
 }
 
-.register-wrapper input {
+.register-panel input {
     font-size: 16px;
     padding: 10px 10px;
     width: 12em;
     text-align: center;
 }
 
-.register-wrapper input[type=email] {
+.register-panel input[type=email] {
     width: 18em;
 }
 
-.register-wrapper input[type=number] {
+.register-panel input[type=number] {
     width: 5em;
 }
 
-.register-wrapper h1 {
+.register-panel h1 {
     font-size: 40px;
 }
 
-.register-wrapper .errorlist {
+.register-panel .errorlist {
     color: red;
     font-size: 14px;
 }
 
-.register-wrapper #id_team-school_name {
+.register-panel #id_team-school_name {
     width: 26em;
 }
 
@@ -265,4 +262,49 @@ input:checked + .slider:before {
 
 .team-form-double-inner {
     padding: 1em 1em;
+}
+
+/* 
+RANKING 
+*/
+.sorting {
+    width: 90%;
+    display: flex;
+    margin-bottom: 30px;
+}
+.sorting a {
+    margin-left: 20px;
+}
+.sorting a:hover {
+    color: var(--light-blue);
+}
+.sorting .go-to-link {
+    margin-right:80px;
+    margin-left: auto;
+}
+
+table {
+    width: 100%;
+    margin: 0 auto;
+}
+table tbody { 
+    max-height: 380px; 
+    overflow-y: auto; 
+    display:block; 
+    width: 100%;
+}
+table tr { 
+    display:block; 
+    width: 100%
+}
+table tbody tr:hover { 
+    background: #b9d5fd;
+}
+
+table td, th {
+    padding: .75rem;
+    vertical-align: top;
+    border-top: 1px solid #dee2e6;
+    width: 250px;
+    text-align: center;
 }

@@ -19,9 +19,6 @@ def configpanel(request):
         if form.is_valid():
             competition_status = form.cleaned_data['competition_status']
             ranking_visibility = form.cleaned_data['ranking_visibility']
-            print(competition_status)
-            print(ranking_visibility)
-            configuration = Configuration.objects.all()[0]
             configuration.competition_status = competition_status
             configuration.ranking_visibility = ranking_visibility
             configuration.save()
@@ -231,3 +228,8 @@ class TestResult(Enum):
     COMPILATION_ERROR = 4
     RUNTIME_ERROR = 5
     TIME_EXCEEDED_ERROR = 6
+
+    
+def ranking(request):
+    teams = Team.objects.all()
+    return render(request, 'competition/ranking.html', {"teams": teams})

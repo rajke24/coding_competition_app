@@ -1,0 +1,81 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link
+      rel="stylesheet"
+      href="{% static 'competition/main.css' %}"
+      type="text/css"
+    />
+    <title>Document</title>
+</head>
+<body>
+    <div class="wrapper">
+        <h1>Ranking</h1>
+        <section class="panel ranking-panel">
+            <div class="sorting">
+                Sortuj według pozycji:
+                <a href="#" onclick="sortTable('asc')">rosnąco</a>
+                <a href="#" onclick="sortTable('desc')">malejąco</a>
+                <a href="{% url 'ranking' %}#team3" class="go-to-link">przejdź do pozycji mojego zespołu</a>
+            </div>
+            <table id="ranking">
+                <thead>
+                    <tr>
+                        <th>Pozycja</th>
+                        <th>Nazwa drużyny</th>
+                        <th>Rozwiązane zadania</th>
+                        <th>Czas rozwiązań</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for team in teams %}
+                    <tr id="{{ team.team_as_user.username }}">
+                        <td class="ranking-position">{{ forloop.counter }}</td>
+                        <td>{{ team.team_as_user.username }}</td>
+                        <td>2</td>
+                        <td>1:30</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </div>
+</body>
+<script>
+    const sortTable = (type) => {
+      let rows, switching, i, positionX, positionY, shouldSwitch;
+      const table = document.getElementById("ranking");
+      switching = true;
+
+      while (switching) {
+        switching = false;
+        rows = table.rows;
+        for (i = 1; i < rows.length - 1; i++) {
+          shouldSwitch = false;
+          
+          positionX = rows[i].getElementsByClassName("ranking-position")[0];
+          positionY = rows[i + 1].getElementsByClassName("ranking-position")[0];
+          if (type === 'asc') {
+            if (parseInt(positionX.innerHTML) > parseInt(positionY.innerHTML)) {
+                shouldSwitch = true;
+                break;
+            }
+          }
+          if (type === 'desc') {
+            if (parseInt(positionX.innerHTML) < parseInt(positionY.innerHTML)) {
+                shouldSwitch = true;
+                break;
+            }
+          }
+        }
+        if (shouldSwitch) {
+          rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+          switching = true;
+        }
+      }
+    }
+</script>
+</html>
