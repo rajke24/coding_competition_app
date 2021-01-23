@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login
 
 from .forms import TeamForm, ParticipantForm
 from .models import Participant, Team
@@ -8,11 +9,11 @@ from competition.models import Configuration
 def no_team_slots_available(request):
     if __is_any_team_slot_available():
         return redirect('registration')
-    return render(request, 'competition/team_limit.html')
+    return render(request, 'users/team_limit.html')
 
 
 def registration_successful(request, team):
-    return render(request, 'competition/registration_success.html', context={
+    return render(request, 'users/registration_success.html', context={
         'team': team, 'team_members': Participant.objects.all().filter(team=team)
     })
 
@@ -41,7 +42,7 @@ def register(request):
             # jeżeli któraś z form jest niepoprawna, zwracamy je z powrotem żeby wyświetliły się błędy
             # odtwarzamy na nowo formy participantów które były zdisablowane na froncie, bo inaczej będą one oznaczone jako błędnie wypełnione
             __recreate_empty_forms(participant_forms, team_members)
-            return render(request, 'competition/registration.html',
+            return render(request, 'users/registration.html',
                           {'participants': participant_forms,
                            'team': team_form,
                            })
@@ -50,7 +51,7 @@ def register(request):
         participant_1 = ParticipantForm(prefix='participant_1')
         participant_2 = ParticipantForm(prefix='participant_2')
         participant_3 = ParticipantForm(prefix='participant_3')
-        return render(request, 'competition/registration.html',
+        return render(request, 'users/registration.html',
                       {'participants': [participant_1, participant_2, participant_3],
                        'team': team})
 
@@ -79,7 +80,7 @@ def __is_any_team_slot_available():
 
 
 def __save_team(team_form):
-    team_user = User.objects.create(
+    team_user = User.objects.create_user(
         username=__generate_username(), password=team_form.cleaned_data['password'])
     team = team_form.save(commit=False)
     team.team_as_user = team_user
@@ -105,3 +106,16 @@ def __save_participants(participant_forms, team_members, team):
 def __recreate_empty_forms(participant_forms, team_members):
     for i in range(team_members, 3):
         participant_forms[i] = ParticipantForm(prefix="participant_".format(i))
+
+
+def login_page(request):
+    if request.method == "POST":
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        team = authenticate(request, username=username, password=password)
+        if team is not None:
+            login(request, team)
+            return redirect('send-solution')
+        else:
+            return redirect('login')
+    return render(request, 'users/login.html')

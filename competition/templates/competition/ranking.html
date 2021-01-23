@@ -19,7 +19,9 @@
                 Sortuj według pozycji:
                 <a href="#" onclick="sortTable('asc')">rosnąco</a>
                 <a href="#" onclick="sortTable('desc')">malejąco</a>
-                <a href="{% url 'ranking' %}#team3" class="go-to-link">przejdź do pozycji mojego zespołu</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'ranking' %}#team3" class="go-to-link">przejdź do pozycji mojego zespołu</a>
+                {% endif %}
             </div>
             <table id="ranking">
                 <thead>

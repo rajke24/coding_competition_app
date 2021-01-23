@@ -3,6 +3,7 @@
 :root {
     --light-blue: #6190e8;
     --megalight-blue: #a7bfe8;
+    --white: #fff;
     --ghost-white: #F8F8FF;
     --light-orange: #e8b961;
 
@@ -153,10 +154,11 @@ input:checked + .slider:before {
 .btn {
     padding: 12px 20px;
     border-radius: 5px;
-    font-size: 0.875rem;
+    font-size: 0.9rem;
     transition: .4s;
     outline: none;
     width: 100px;
+    border: none;
 }
 
 .accept-btn {
@@ -194,23 +196,24 @@ input:checked + .slider:before {
     }
 }
 
-.register-panel label {
+.panel label {
     display: block;
     margin: 5px 5px;
 }
 
-.register-panel input {
+.panel input {
     font-size: 16px;
     padding: 10px 10px;
     width: 12em;
     text-align: center;
+    border-radius: 3px;
 }
 
-.register-panel input[type=email] {
+.panel input[type=email] {
     width: 18em;
 }
 
-.register-panel input[type=number] {
+.panel input[type=number] {
     width: 5em;
 }
 
@@ -308,3 +311,35 @@ table td, th {
     width: 250px;
     text-align: center;
 }
+
+
+/*************** 
+LOGIN
+ ***************/
+ .login-panel {
+     width:30%;
+     height: 70vh;
+ }
+ .login-panel input {
+     text-align: left;
+     margin-bottom: 20px;
+ }
+ .login-panel input[type="password"] {
+    font: small-caption;
+    font-size: 16px;
+}
+
+ .login-panel h1 {
+     margin-bottom: 80px;
+ }
+
+ .login-btn {
+     color: var(--white);
+     background: var(--megalight-blue);
+     width: 60%;
+ }
+
+ .login-btn:hover {
+    cursor: pointer;
+    background: var(--light-blue);
+ }
