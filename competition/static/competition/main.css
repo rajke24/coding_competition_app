@@ -322,15 +322,21 @@ LOGIN
  }
  .login-panel input {
      text-align: left;
-     margin-bottom: 20px;
  }
  .login-panel input[type="password"] {
     font: small-caption;
     font-size: 16px;
+    margin-bottom: 10px;
+}
+.login-panel label {
+    margin-top: 20px;
 }
 
  .login-panel h1 {
-     margin-bottom: 80px;
+     margin-bottom: 50px;
+ }
+ .login-panel span a {
+     font-weight: 500;
  }
 
  .login-btn {

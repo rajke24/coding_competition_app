@@ -10,13 +10,17 @@
 <body>
     <div class="wrapper">
         <div class="panel login-panel">
-            <h1>Log in</h1>
+            <h1>Zaloguj się</h1>
             <form method="POST">
                 {% csrf_token %}
-                <label for="username">username</label>
+                <label for="username">nazwa drużyny</label>
                 <input type="text" id="username" name="username">
-                <label for="password">password</label>
+                <label for="password">hasło</label>
                 <input type="password" id="password" name="password">
+                <span style="margin-bottom: 20px;">
+                    Nie masz jeszcze drużyny ? 
+                    <a href="{% url 'registration' %}">Załóż ją</a>
+                </span>
                 <button class="btn login-btn" type="submit">Login</button>
             </form>
         </div>

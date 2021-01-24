@@ -5,6 +5,8 @@ from django.contrib.auth import authenticate, login
 from .forms import TeamForm, ParticipantForm
 from .models import Participant, Team
 from competition.models import Configuration
+from .decorators import unauthenticated_user
+
 
 def no_team_slots_available(request):
     if __is_any_team_slot_available():
@@ -107,7 +109,7 @@ def __recreate_empty_forms(participant_forms, team_members):
     for i in range(team_members, 3):
         participant_forms[i] = ParticipantForm(prefix="participant_".format(i))
 
-
+@unauthenticated_user
 def login_page(request):
     if request.method == "POST":
         username = request.POST.get('username')
