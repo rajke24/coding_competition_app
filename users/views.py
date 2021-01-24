@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.contrib.auth import authenticate, login
 
 from .forms import TeamForm, ParticipantForm
@@ -85,6 +85,8 @@ def __save_team(team_form):
     team_user = User.objects.create_user(
         username=__generate_username(), password=team_form.cleaned_data['password'])
     team = team_form.save(commit=False)
+    group = Group.objects.get(name="team")
+    team_user.groups.add(group)
     team.team_as_user = team_user
     team.save()
     return team

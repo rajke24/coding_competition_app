@@ -63,7 +63,9 @@ h4 {
     flex-direction: column;
     color: var(--ghost-white);
 }
-
+.wrapper.inactive {
+    background:#131C2E;
+}
 .panel {
     background: var(--ghost-white);
     box-shadow: var(--light-shadow);
@@ -282,7 +284,6 @@ RANKING
     color: var(--light-blue);
 }
 .sorting .go-to-link {
-    margin-right:80px;
     margin-left: auto;
 }
 
@@ -311,7 +312,9 @@ table td, th {
     width: 250px;
     text-align: center;
 }
-
+.active-team {
+    background: #b9d5fd;
+}
 
 /*************** 
 LOGIN

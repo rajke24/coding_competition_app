@@ -1,4 +1,6 @@
 {% load static %}
+{% load competition_tags %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,38 +14,47 @@
     <title>Document</title>
 </head>
 <body>
-    <div class="wrapper">
-        <h1>Ranking</h1>
-        <section class="panel ranking-panel">
-            <div class="sorting">
-                Sortuj według pozycji:
-                <a href="#" onclick="sortTable('asc')">rosnąco</a>
-                <a href="#" onclick="sortTable('desc')">malejąco</a>
-                {% if user.is_authenticated %}
-                    <a href="{% url 'ranking' %}#team3" class="go-to-link">przejdź do pozycji mojego zespołu</a>
-                {% endif %}
-            </div>
-            <table id="ranking">
-                <thead>
-                    <tr>
-                        <th>Pozycja</th>
-                        <th>Nazwa drużyny</th>
-                        <th>Rozwiązane zadania</th>
-                        <th>Czas rozwiązań</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for team in teams %}
-                    <tr id="{{ team.team_as_user.username }}">
-                        <td class="ranking-position">{{ forloop.counter }}</td>
-                        <td>{{ team.team_as_user.username }}</td>
-                        <td>2</td>
-                        <td>1:30</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </section>
+    <div class="wrapper {% if configuration.ranking_visibility == false and user|has_group:"judge" %} inactive {% endif %}">
+        {% if configuration.ranking_visibility == 1 or user|has_group:"judge" %}
+            {% if configuration.ranking_visibility == 1 %}
+                <h1>Ranking</h1>
+            {% else %}
+                <h1>Ranking z godziny 14:30</h1>
+                <p>Widoczność aktualnego rankingu została wyłączona</p>
+            {% endif %}
+            <section class="panel ranking-panel">
+                <div class="sorting">
+                    Sortuj według pozycji:
+                    <a href="#" onclick="sortTable('asc')">rosnąco</a>
+                    <a href="#" onclick="sortTable('desc')">malejąco</a>
+                    {% if user.is_authenticated and user|has_group:"team"%}
+                        <a href="{% url 'ranking' %}#{{user.username}}" class="go-to-link">przejdź do pozycji mojego zespołu</a>
+                    {% endif %}
+                </div>
+                <table id="ranking">
+                    <thead>
+                        <tr>
+                            <th>Pozycja</th>
+                            <th>Nazwa drużyny</th>
+                            <th>Rozwiązane zadania</th>
+                            <th>Czas rozwiązań</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for team in teams %}
+                        <tr id="{{ team.team_as_user.username }}" {% if team.team_as_user.username == user.username %} class="active-team" {% endif %}>
+                            <td class="ranking-position">{{ forloop.counter }}</td>
+                            <td>{{ team.team_as_user.username }}</td>
+                            <td>2</td>
+                            <td>1:30</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+        {% else %}
+            <h1>Ranking jest chwilowo niedostępny</h1>
+        {% endif %}
     </div>
 </body>
 <script>

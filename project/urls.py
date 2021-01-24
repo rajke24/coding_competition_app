@@ -4,11 +4,12 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth.views import LogoutView
 
-from competition.views import configpanel, ranking, send_solution
+from competition.views import configpanel, ranking, send_solution, home
 from users.views import register, no_team_slots_available, login_page
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', home, name="home"),
     path('config-panel/', configpanel, name='config-panel'),
     path('register/', register, name='registration'),
     path('register/limit', no_team_slots_available, name='register-no-team-slots-available'),

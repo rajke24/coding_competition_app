@@ -134,3 +134,6 @@ class TestResult(Enum):
 def ranking(request):
     teams = Team.objects.all()
     return render(request, 'competition/ranking.html', {"teams": teams})
+
+def home(request):
+    return HttpResponse("Home")
