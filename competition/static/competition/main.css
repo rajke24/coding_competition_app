@@ -198,7 +198,8 @@ input:checked + .slider:before {
     }
 }
 
-.panel label {
+.register-panel, 
+.login-panel label {
     display: block;
     margin: 5px 5px;
 }

@@ -18,7 +18,7 @@
     {% if configuration.ranking_visibility == 1 or user|has_group:"judge" %}
         <h1>Ranking</h1>
     {% else %}
-        <h1>Ranking z godziny 14:30</h1>
+        <h1>Ranking z godziny {{ configuration.ranking_visibility_change_time|time:"H:i" }}</h1>
         <p>Widoczność aktualnego rankingu została wyłączona</p>
     {% endif %}
     <section class="panel ranking-panel">

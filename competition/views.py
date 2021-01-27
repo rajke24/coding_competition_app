@@ -1,6 +1,7 @@
 import subprocess
 from os import path
 import os
+from datetime import datetime
 
 from django.contrib.auth.models import User
 from django.http import HttpResponse
@@ -21,6 +22,9 @@ def configpanel(request):
             ranking_visibility = form.cleaned_data['ranking_visibility']
             configuration.competition_status = competition_status
             configuration.ranking_visibility = ranking_visibility
+            if ranking_visibility == False:
+                time = datetime.now().strftime("%H:%M")
+                configuration.ranking_visibility_change_time = time
             configuration.save()
             return redirect('config-panel')
     else:
