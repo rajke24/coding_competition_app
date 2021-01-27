@@ -119,7 +119,7 @@ def login_page(request):
         team = authenticate(request, username=username, password=password)
         if team is not None:
             login(request, team)
-            return redirect('send-solution')
+            return redirect('home')
         else:
             return redirect('login')
     return render(request, 'users/login.html')

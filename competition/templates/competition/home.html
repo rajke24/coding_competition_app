@@ -1,0 +1,65 @@
+{% load static %}
+{% load competition_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link
+            rel="stylesheet"
+            href="{% static 'competition/main.css' %}"
+            type="text/css"
+    />
+    <title>Strona Główna</title>
+</head>
+<body>
+<div class="wrapper">
+    <div class="panel">
+        <div id="header">
+            Witaj,
+            {% if user.is_authenticated %}
+                {{ user.username }}!
+            {% else %}
+                nieznajomy!
+            {% endif %}
+        </div>
+
+
+        {% if user.is_authenticated %}
+            {% if user|has_group:"team" %}
+
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <label for="task-select" style="display: block;">Wybierz zadanie</label>
+                    <select name="tasks" id="task-select" style="display: block;">
+                        {% for task in tasks %}
+                            <option value="{{ task.task.id }}" {% if task.is_finished %}
+                                    disabled="disabled" {% endif %}>
+                                {{ task.task.id }} {% if task.is_finished %} (ROZWIĄZANE) {% endif %}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit" onclick="location.href = '/solution'" {% if are_all_tasks_finished %}
+                            disabled="disabled" {% endif %}>Przejdź do zadania
+                    </button>
+                </form>
+
+
+            {% elif user|has_group:"admin" %}
+                <button class="btn accept-btn" onclick="location.href = '/solution'">Panel admina</button>
+            {% elif user|has_group:"judge" %}
+                <button class="btn accept-btn" onclick="location.href = '/configpanel'">Zarządzaj zawodami</button>
+            {% endif %}
+            <button class="btn accept-btn" onclick="location.href = '/ranking'">Sprawdź ranking</button>
+            <button class="btn accept-btn" onclick="location.href = '/logout'">Wyloguj się!</button>
+        {% else %}
+            <button class="btn accept-btn" onclick="location.href = '/login'">Zaloguj się!</button>
+            <button class="btn accept-btn" onclick="location.href = '/register'">Zarejestruj się!</button>
+        {% endif %}
+
+    </div>
+</div>
+</body>
+</html>

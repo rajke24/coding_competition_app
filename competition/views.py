@@ -33,9 +33,11 @@ def configpanel(request):
     return render(request, 'competition/configpanel.html', {"configuration": configuration})
 
 
-def send_solution(request):
+def send_solution(request, task_id):
+    #todo: check 1) user is team 2) task_id is valid id 3) team haven't done this task already
+
     if request.method == 'POST':
-        task = Task.objects.all()[0]  # placeholder
+        task = Task.objects.all().filter(id=task_id).first()  # placeholder
         team = Team.objects.all().filter(team_as_user__username=request.user).first()
 
         solution = Solution.objects.create(task=task, team=team,
@@ -137,8 +139,34 @@ class TestResult(Enum):
 
 def ranking(request):
     teams = Team.objects.all()
-    return render(request, 'competition/ranking.html', {"teams": teams, 'configuration': Configuration.objects.all()[0]})
+    return render(request, 'competition/ranking.html',
+                  {"teams": teams, 'configuration': Configuration.objects.all()[0]})
 
 
 def home(request):
-    return HttpResponse("Home")
+    if request.method == 'POST':
+        task_id = int(request.POST['tasks'])
+        return redirect('send-solution', task_id)
+    else:
+        context = {}
+        is_user_team = request.user.groups.filter(name='team').exists()
+        if is_user_team:
+            team = Team.objects.all().filter(team_as_user=request.user).first()
+            team_tasks, are_all_tasks_finished = __get_team_tasks(team)
+            context['tasks'] = team_tasks
+            context['are_all_tasks_finished'] = are_all_tasks_finished
+        return render(request, 'competition/home.html', context)
+
+
+def __get_team_tasks(team):
+    all_tasks = Task.objects.all()
+    finished_tasks = Solution.objects.all().filter(team=team).filter(
+        solution_status=Solution.SolutionStatus.CORRECT).values_list('task', flat=True)
+    tasks_with_statuses = []
+    are_all_finished = True
+    for task in all_tasks:
+        is_finished = task.id in finished_tasks
+        if not is_finished:
+            are_all_finished = False
+        tasks_with_statuses.append({'task': task, 'is_finished': is_finished})
+    return tasks_with_statuses, are_all_finished

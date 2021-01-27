@@ -15,7 +15,7 @@
 </head>
 <body>
 <div class="wrapper {% if configuration.ranking_visibility == 0 and user|has_group:"team" %} inactive {% endif %}">
-    {% if configuration.ranking_visibility == 1 or user|has_group:"judge" %}
+    {% if configuration.ranking_visibility == 1 or user|has_group:"judge" or user|has_group:"admin" %}
         <h1>Ranking</h1>
     {% else %}
         <h1>Ranking z godziny {{ configuration.ranking_visibility_change_time|time:"H:i" }}</h1>

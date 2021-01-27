@@ -13,7 +13,7 @@ urlpatterns = [
     path('config-panel/', configpanel, name='config-panel'),
     path('register/', register, name='registration'),
     path('register/limit', no_team_slots_available, name='register-no-team-slots-available'),
-    path('solution', send_solution, name='send-solution'),
+    path('solution/<int:task_id>/', send_solution, name='send-solution'),
     path('ranking/', ranking, name='ranking'),
     path('login/', login_page, name='login'),
     path('logout/', LogoutView.as_view(template_name='users/logout.html'), name='logout'),
