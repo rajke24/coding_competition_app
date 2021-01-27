@@ -36,7 +36,7 @@ def configpanel(request):
 def send_solution(request):
     if request.method == 'POST':
         task = Task.objects.all()[0]  # placeholder
-        team = Team.objects.all()[0]  # placeholder
+        team = Team.objects.all().filter(team_as_user__username=request.user).first()
 
         solution = Solution.objects.create(task=task, team=team,
                                            content=__sanitize_solution_content(request.POST['solution']))
