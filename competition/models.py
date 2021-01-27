@@ -52,6 +52,7 @@ class Configuration(models.Model):
     participants_limit = models.PositiveIntegerField()
     competition_status = models.IntegerField(choices=CompetitionStatus.choices, default=CompetitionStatus.INACTIVE)
     ranking_visibility = models.IntegerField(choices=RankingVisibility.choices, default=RankingVisibility.VISIBLE)
+    ranking_visibility_change_time = models.TimeField(null=True, blank=True)
 
     def __str__(self):
         return "Configuration"
