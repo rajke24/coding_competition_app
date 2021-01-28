@@ -70,6 +70,9 @@
             modal = document.querySelector('.wrong-answer-modal')
             modalParagraph = modal.getElementsByTagName('p')[0]
             modal.style.display = 'flex';
+            if (solutionStatus === 3) {
+               modalParagraph.textContent = "Przyczyna: Niepoprawna odpowiedź";
+            }
             if (solutionStatus === 4) {
                 modalParagraph.textContent = "Przyczyna: Błąd prezentacji";
             }
