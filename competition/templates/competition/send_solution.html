@@ -9,17 +9,102 @@
             href="{% static 'competition/main.css' %}"
             type="text/css"
     />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
     <title>Document</title>
 </head>
 <body>
 <div class="wrapper">
+    {{ solution_status|json_script:'solution_status'}}
+    {{ configuration.competition_status|json_script:'competition_status'}}
+    <div class="bg-modal">
+        <div class="modal confirmation-modal">
+            <h1>Czy na pewno chcesz przesłać rozwiązanie ?</h1>
+            <div>
+                <button class="btn cancel-btn" onclick="closeModal('.confirmation-modal')">Nie</button>
+                <button class="btn accept-btn" type="submit" onClick="sendSolution()">Tak</button>
+            </div>
+        </div>
+        <div class="modal sending-error-modal">
+            <h1>Błąd przesyłania</h1>
+            {% if configuration.competition_status == 0 %}
+            <p>Zawody są nieaktywne</p>
+            {% else %}
+            <p>Rozwiązanie użytkownia jest puste</p>
+            {% endif %}
+            <button class="btn accept-btn" onclick="closeModal('.sending-error-modal')">Zamknij</button>
+        </div>
+        <div class="modal correct-answer-modal">
+            <h1>Rozwiązanie jest poprawne</h1>
+            <i class="material-icons">check</i>
+            <button class="btn accept-btn" onclick="closeModal('.correct-answer-modal')">Zamknij</button>
+        </div>
+        <div class="modal wrong-answer-modal">
+            <h1>Rozwiązanie jest niepoprawne</h1>
+            <p>Przyczyna: Przekroczono czas wykonania</p>
+            <i class="material-icons">clear</i>
+            <button class="btn accept-btn" onclick="closeModal('.wrong-answer-modal')">Zamknij</button>
+        </div>
+    </div>
     <div class="panel">
-        <form method="POST">
+        <form id="solution-form" method="POST" action="">
             {% csrf_token %}
             {{ solution_form }}
-            <input class="btn accept-btn" type="submit" value="Prześlij rozwiązanie">
+            <input id="send-btn" class="btn accept-btn" type="button" value="Prześlij rozwiązanie" onClick="openModal('.confirmation-modal')">
         </form>
     </div>
 </div>
 </body>
+<script>
+    const solutionStatus = JSON.parse(document.getElementById('solution_status').textContent);
+    const competitionStatus = JSON.parse(document.getElementById('competition_status').textContent);
+    console.log(solutionStatus);
+    document.addEventListener('DOMContentLoaded', function() {
+        if (solutionStatus !== 1) {
+            document.querySelector('.bg-modal').style.display = 'flex';
+        }
+        if (solutionStatus === 2) {
+            document.querySelector('.correct-answer-modal').style.display = 'flex';
+        }
+        if (solutionStatus !== 2 && solutionStatus !== 1) {
+            modal = document.querySelector('.wrong-answer-modal')
+            modalParagraph = modal.getElementsByTagName('p')[0]
+            modal.style.display = 'flex';
+            if (solutionStatus === 4) {
+                modalParagraph.textContent = "Przyczyna: Błąd prezentacji";
+            }
+            if (solutionStatus === 5) {
+                modalParagraph.textContent = "Przyczyna: Błąd kompilacji";
+            }
+            if (solutionStatus === 6) {
+                modalParagraph.textContent = "Przyczyna: Błąd czasu wykonania";
+            }
+            if (solutionStatus === 7) {
+                modalParagraph.textContent = "Przyczyna: Przekroczono czas wykonania";
+            }
+        }
+    })
+    const openModal = (modal) => {
+        document.querySelector('.bg-modal').style.display = 'flex';
+        document.querySelector(modal).style.display = 'flex';
+    }    
+
+    const closeModal = (modal) => {
+        document.querySelector('.bg-modal').style.display = 'none';
+        document.querySelector(modal).style.display = 'none';
+    }
+
+    const sendSolution = () => {
+        const solutionContent = document.getElementById('id_solution').value;
+        document.querySelector('.confirmation-modal').style.display = 'none';
+        if (solutionContent.length === 0 || !competitionStatus) {
+            openModal('.sending-error-modal');
+        }
+        else {
+            const form = document.getElementById('solution-form');
+            form.submit();
+        }
+    }
+
+</script>
 </html>

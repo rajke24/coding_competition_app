@@ -35,7 +35,7 @@ def configpanel(request):
 
 def send_solution(request, task_id):
     #todo: check 1) user is team 2) task_id is valid id 3) team haven't done this task already
-
+    solution_status = 1
     if request.method == 'POST':
         task = Task.objects.all().filter(id=task_id).first()  # placeholder
         team = Team.objects.all().filter(team_as_user__username=request.user).first()
@@ -47,8 +47,14 @@ def send_solution(request, task_id):
         __delete_solution_file(solution_filename)
         solution.solution_status = solution_status
         solution.save()
-        return HttpResponse(solution_status.name)
-    return render(request, 'competition/send_solution.html', context={'solution_form': SolutionForm()})
+
+    configuration = Configuration.objects.all()[0]
+    context = {
+        'solution_form': SolutionForm(), 
+        'configuration': configuration,
+        'solution_status': solution_status,
+    }
+    return render(request, 'competition/send_solution.html', context)
 
 
 def __sanitize_solution_content(content):
