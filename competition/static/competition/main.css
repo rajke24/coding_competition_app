@@ -476,3 +476,11 @@ LOGIN
     flex-direction: row;
     justify-content: center;
 }
+.error-div {
+    text-align: center;
+}
+
+.error-div p {
+    color: red;
+    font-size: 14px;
+}

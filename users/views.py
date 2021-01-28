@@ -113,13 +113,13 @@ def __recreate_empty_forms(participant_forms, team_members):
 
 @unauthenticated_user
 def login_page(request):
+    context = {}
     if request.method == "POST":
         username = request.POST.get('username')
         password = request.POST.get('password')
-        team = authenticate(request, username=username, password=password)
-        if team is not None:
-            login(request, team)
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
             return redirect('home')
-        else:
-            return redirect('login')
-    return render(request, 'users/login.html')
+        context['invalid_user'] = True
+    return render(request, 'users/login.html', context)

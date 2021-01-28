@@ -11,9 +11,16 @@
     <div class="wrapper">
         <div class="panel login-panel">
             <h1>Zaloguj się</h1>
+            {% if invalid_user and invalid_user == True %}
+                <div class="error-div">
+                    <p>Błąd logowania</p>
+                    <p>Podano nieprawdidłowy login lub hasło</p>
+                </div>
+            {% endif %}
+
             <form method="POST">
                 {% csrf_token %}
-                <label for="username">nazwa drużyny</label>
+                <label for="username">nazwa użytkownika</label>
                 <input type="text" id="username" name="username">
                 <label for="password">hasło</label>
                 <input type="password" id="password" name="password">
