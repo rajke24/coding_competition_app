@@ -12,53 +12,109 @@
             type="text/css"
     />
     <title>Strona Główna</title>
+
 </head>
 <body>
 <div class="wrapper">
-    <div class="panel">
+    <div class="panel home-panel">
         <div id="header">
-            Witaj,
+            <h1>
+                Witaj,
+                {% if user.is_authenticated %}
+                    {{ user.username }}!
+                {% else %}
+                    nieznajomy!
+                {% endif %}
+            </h1>
+        </div>
+        <div id="subheader">
             {% if user.is_authenticated %}
-                {{ user.username }}!
+                {% if user|has_group:"team" %}
+                    Konto drużyny
+                {% elif user|has_group:"judge" %}
+                    Konto sędziowskie
+                {% elif user|has_group:"admin" %}
+                    Konto admina
+                {% endif %}
             {% else %}
-                nieznajomy!
+                Nie jesteś zalogowany
             {% endif %}
         </div>
 
-
         {% if user.is_authenticated %}
             {% if user|has_group:"team" %}
+                <div>
+                    <div class="button-div">
+                        <form method="POST">
+                            <div class="home-task-div">
+                                {% csrf_token %}
+                                <div>
+                                    <label for="task-select">Wybierz zadanie</label>
+                                    <select name="tasks" id="task-select">
+                                        {% for task in tasks %}
+                                            <option value="{{ task.task.id }}" {% if task.is_finished %}
+                                                    disabled {% endif %}>
+                                                {{ task.task.id }} {% if task.is_finished %} (ROZWIĄZANE) {% else %}
+                                                (DO ZROBIENIA) {% endif %}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div>
+                                    <button class="btn accept-btn" type="submit" onclick="location.href = '/solution'"
+                                            {% if are_all_tasks_finished %}
+                                                disabled="disabled" style="cursor: not-allowed;"
+                                            {% endif %}>
+                                        Przejdź do zadania
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="button-div">
+                        <button class="btn accept-btn" onclick="location.href = '/ranking'">Sprawdź ranking</button>
+                    </div>
+                </div>
 
-                <form method="POST">
-                    {% csrf_token %}
-
-                    <label for="task-select" style="display: block;">Wybierz zadanie</label>
-                    <select name="tasks" id="task-select" style="display: block;">
-                        {% for task in tasks %}
-                            <option value="{{ task.task.id }}" {% if task.is_finished %}
-                                    disabled="disabled" {% endif %}>
-                                {{ task.task.id }} {% if task.is_finished %} (ROZWIĄZANE) {% endif %}
-                            </option>
-                        {% endfor %}
-                    </select>
-                    <button type="submit" onclick="location.href = '/solution'" {% if are_all_tasks_finished %}
-                            disabled="disabled" {% endif %}>Przejdź do zadania
-                    </button>
-                </form>
-
-
-            {% elif user|has_group:"admin" %}
-                <button class="btn accept-btn" onclick="location.href = '/solution'">Panel admina</button>
-            {% elif user|has_group:"judge" %}
-                <button class="btn accept-btn" onclick="location.href = '/configpanel'">Zarządzaj zawodami</button>
+            {% else %}
+                <div class="home-content-div">
+                    {% if user|has_group:"admin" %}
+                        <div id="adminpanel" class="button-div">
+                            <button class="btn accept-btn" onclick="location.href = '/admin'">
+                                Panel admina
+                            </button>
+                        </div>
+                    {% elif user|has_group:"judge" %}
+                        <div id="configpanel" class="button-div">
+                            <button class="btn accept-btn" onclick="location.href = '/configpanel'">
+                                Zarządzaj zawodami
+                            </button>
+                        </div>
+                    {% endif %}
+                    <div id="ranking" class="button-div">
+                        <button class="btn accept-btn" onclick="location.href = '/ranking'">
+                            Sprawdź ranking
+                        </button>
+                    </div>
+                </div>
             {% endif %}
-            <button class="btn accept-btn" onclick="location.href = '/ranking'">Sprawdź ranking</button>
-            <button class="btn accept-btn" onclick="location.href = '/logout'">Wyloguj się!</button>
-        {% else %}
-            <button class="btn accept-btn" onclick="location.href = '/login'">Zaloguj się!</button>
-            <button class="btn accept-btn" onclick="location.href = '/register'">Zarejestruj się!</button>
         {% endif %}
 
+
+        <div class="home-login-controls-panel">
+            {% if user.is_authenticated %}
+                <button class="btn accept-btn" onclick="location.href = '/logout'">
+                    Wyloguj się!
+                </button>
+            {% else %}
+                <button class="btn accept-btn" onclick="location.href = '/login'">
+                    Zaloguj się!
+                </button>
+                <button class="btn accept-btn" onclick="location.href = '/register'">
+                    Zarejestruj się!
+                </button>
+            {% endif %}
+        </div>
     </div>
 </div>
 </body>

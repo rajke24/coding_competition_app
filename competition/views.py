@@ -26,7 +26,7 @@ def configpanel(request):
                 time = datetime.now().strftime("%H:%M")
                 configuration.ranking_visibility_change_time = time
             configuration.save()
-            return redirect('config-panel')
+            return redirect('home')
     else:
         form = ConfigPanelForm()
 

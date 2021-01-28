@@ -424,3 +424,55 @@ LOGIN
 .wrong-answer-modal i {
     margin-top: 10px;
 }
+
+/*
+    HOME
+ */
+
+.home-panel {
+    width: 30%;
+}
+
+.button-div {
+    margin: 15px;
+}
+
+.button-div button {
+    width: 100%
+}
+
+.home-login-controls-panel {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center
+}
+
+.home-login-controls-panel button {
+    width: 30%;
+    margin: 15px
+}
+
+.home-task-div {
+    display: inline-flex;
+    flex-direction: row;
+    width: 100%;
+    align-items: center;
+    justify-content: center
+}
+
+.home-task-div div {
+    margin-right: 5px;
+    margin-left: 5px
+}
+
+.home-task-div label {
+    display: block;
+    margin: 2px;
+}
+
+.home-content-div {
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: center;
+}
