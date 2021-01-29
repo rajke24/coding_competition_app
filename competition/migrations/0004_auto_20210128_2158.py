@@ -27,7 +27,7 @@ def __create_tasks(Task, Test):
     task_1 = Task.objects.create(
         description='FizzBuzz. W pierwszej linijce n, potem w nowych linijkach n liczb całkowitych [1, 1000]. Wypisz Fizz jeżeli liczba dzieli się przez 3, Buzz jeśli dzieli się przez 5 , FizzBuzz jeśli liczba dzieli się i przez 3 i przez 5 oraz wypisz tę liczbę jeśli liczba nie dzieli się ani przez 3 ani przez 5.')
     tests_1 = [
-        Test.objects.create(task=task_1, input=r'\n3\n5\n15\n2', output=r'Fizz\nBuzz\nFizzBuzz\n2'),
+        Test.objects.create(task=task_1, input=r'4\n3\n5\n15\n2', output=r'Fizz\nBuzz\nFizzBuzz\n2'),
         Test.objects.create(task=task_1, input=r'5\n2\n4\n8\n19\n22', output=r'2\n4\n8\n19\n22'),
         Test.objects.create(task=task_1, input=r'4\n3\n6\n9\n12', output=r'Fizz\nFizz\nFizz\nFizz'),
         Test.objects.create(task=task_1, input=r'1\n30', output=r'FizzBuzz'),
