@@ -41,6 +41,18 @@
             </tr>
             </thead>
             <tbody>
+            {% for entry in ranking_entries %}
+                <tr id="{{ entry.team.team_as_user.username }}" {% if entry.team.team_as_user.username == user.username %}
+                    class="active-team "{% endif %}>
+                    <td class="ranking-position">{{ forloop.counter }}</td>
+                    <td>{{ entry.team.team_as_user.username }}</td>
+                    <td>{{ entry.correct_solutions }}</td>
+                    <td>{{ entry.formatted_time }}</td>
+                </tr>
+            {% endfor %}
+
+
+            {% comment %}
             {% for team in teams %}
                 <tr id="{{ team.team_as_user.username }}" {% if team.team_as_user.username == user.username %}
                     class="active-team" {% endif %}>
@@ -51,6 +63,7 @@
                 </tr>
             {% endfor %}
             </tbody>
+            {% endcomment %}
         </table>
     </section>
 </div>

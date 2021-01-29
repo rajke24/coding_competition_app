@@ -1,20 +1,18 @@
 import subprocess
+import datetime
 from os import path
 import os
-from datetime import datetime
-
-from django.contrib.auth.models import User
-from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
-from .decorators import team_user
+from .decorators import team_user, authorized_user, judge_user
 from .forms import ConfigPanelForm, SolutionForm
 import random
 from enum import Enum
 from .models import Configuration, Task, Test, Solution, SolutionTestResult
-from users.models import Team, Participant
+from users.models import Team
 
 
+@judge_user
 def configpanel(request):
     configuration = Configuration.objects.all()[0]
     if request.method == 'POST':
@@ -25,7 +23,7 @@ def configpanel(request):
             configuration.competition_status = competition_status
             configuration.ranking_visibility = ranking_visibility
             if ranking_visibility == False:
-                time = datetime.now().strftime("%H:%M")
+                time = datetime.datetime.now()
                 configuration.ranking_visibility_change_time = time
             configuration.save()
             return redirect('home')
@@ -45,9 +43,11 @@ def send_solution(request, task_id):
     solution_status = 1
     if request.method == 'POST':
         solution = Solution.objects.create(task=task, team=team,
-                                           content=__sanitize_solution_content(request.POST['solution']))
+                                           content=__sanitize_solution_content(request.POST['solution']),
+                                           upload_time=datetime.datetime.now())
         solution_filename = __save_solution_to_file(solution)
         solution_status = __run_tests(solution_filename, task, solution)
+        print(solution_status)
         __delete_solution_file(solution_filename)
         solution.solution_status = solution_status
         solution.save()
@@ -71,6 +71,7 @@ def __is_valid_team_and_task(task, team):
         if team_task == task:
             return not is_finished
     return False
+
 
 def __sanitize_solution_content(content):
     return '\n'.join(content.splitlines())
@@ -158,10 +159,69 @@ class TestResult(Enum):
     TIME_EXCEEDED_ERROR = 6
 
 
+@authorized_user
 def ranking(request):
-    teams = Team.objects.all()
+    ranking_entries = __get_ranking_entries(request.user)
     return render(request, 'competition/ranking.html',
-                  {"teams": teams, 'configuration': Configuration.objects.all()[0]})
+                  {"teams": Team.objects.all(), 'ranking_entries': ranking_entries,
+                   'configuration': Configuration.objects.all()[0]})
+
+
+def __get_ranking_entries(user):
+    should_show_frozen_results = __is_user_team(user) and not __is_ranking_visible()
+    if should_show_frozen_results:
+        ranking_visibility_change_time = Configuration.objects.all()[0].ranking_visibility_change_time
+
+    def __get_ranking_entry(entry_team):
+        team_solutions = Solution.objects.all().filter(team=entry_team)
+        if should_show_frozen_results:
+            team_solutions = team_solutions.filter(upload_time__lte=ranking_visibility_change_time)
+        total_time, correct_solutions_count = __calculate_total_time(team_solutions)
+        return {'team': entry_team, 'correct_solutions': correct_solutions_count, 'time': total_time,
+                'formatted_time': __format_time(total_time)}
+
+    ranking_entries = [__get_ranking_entry(team) for team in Team.objects.all()]
+    ranking_entries.sort(key=lambda e: (-e['correct_solutions'], e['time']))
+    return ranking_entries
+
+
+def __calculate_total_time(team_solutions):
+    correct_solutions = team_solutions.filter(solution_status=Solution.SolutionStatus.CORRECT)
+    correct_solutions_count = correct_solutions.count()
+    incorrect_solutions_count = team_solutions.exclude(solution_status=Solution.SolutionStatus.CORRECT).exclude(
+        solution_status=Solution.SolutionStatus.NOT_EVALUATED).count()
+
+    if correct_solutions_count > 0:
+        base_time = correct_solutions.order_by('upload_time').last().upload_time
+        difference_in_seconds = (base_time - __get_competition_start_time()).seconds
+        final_time = __calculate_time(difference_in_seconds, incorrect_solutions_count)
+    else:
+        final_time = __calculate_time(0, incorrect_solutions_count)
+    return final_time, correct_solutions_count
+
+
+def __get_competition_start_time():
+    return datetime.datetime(year=2021, month=1, day=29, hour=15, minute=30, tzinfo=datetime.timezone.utc)  # todo
+
+
+def __calculate_time(difference_in_seconds, incorrect_solutions_count):
+    incorrect_solution_penalty = 1200  # 20 minut = 720 sekund
+    return difference_in_seconds + (incorrect_solutions_count * incorrect_solution_penalty)
+
+
+def __format_time(time):
+    hours = time // 3600
+    minutes = time // 60 % 60
+    return "{}:{:02d}".format(hours, minutes)
+
+
+def __is_user_team(user):
+    return user.groups.filter(name='team').exists()
+
+
+def __is_ranking_visible():
+    visibility = Configuration.objects.all()[0].ranking_visibility
+    return visibility == Configuration.RankingVisibility.VISIBLE
 
 
 def home(request):
@@ -170,8 +230,7 @@ def home(request):
         return redirect('send-solution', task_id)
     else:
         context = {}
-        is_user_team = request.user.groups.filter(name='team').exists()
-        if is_user_team:
+        if __is_user_team(request.user):
             team = Team.objects.all().filter(team_as_user=request.user).first()
             team_tasks, are_all_tasks_finished = __get_team_tasks(team)
             context['tasks'] = team_tasks

@@ -30,7 +30,7 @@ class Solution(models.Model):
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     task = models.ForeignKey(Task, on_delete=models.CASCADE)
     content = models.CharField(max_length=2048)
-    upload_time = models.DateTimeField(auto_now_add=True)
+    upload_time = models.DateTimeField()
     solution_status = models.IntegerField(choices=SolutionStatus.choices, default=SolutionStatus.NOT_EVALUATED)
 
 
@@ -52,7 +52,7 @@ class Configuration(models.Model):
     participants_limit = models.PositiveIntegerField()
     competition_status = models.IntegerField(choices=CompetitionStatus.choices, default=CompetitionStatus.INACTIVE)
     ranking_visibility = models.IntegerField(choices=RankingVisibility.choices, default=RankingVisibility.VISIBLE)
-    ranking_visibility_change_time = models.TimeField(null=True, blank=True)
+    ranking_visibility_change_time = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return "Configuration"
