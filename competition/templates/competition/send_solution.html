@@ -37,7 +37,7 @@
         <div class="modal correct-answer-modal">
             <h1>Rozwiązanie jest poprawne</h1>
             <i class="material-icons">check</i>
-            <button class="btn accept-btn" onclick="closeModal('.correct-answer-modal')">Zamknij</button>
+            <button class="btn accept-btn" onclick="closeModal('.correct-answer-modal'); location.reload(); return false;">Zamknij</button>
         </div>
         <div class="modal wrong-answer-modal">
             <h1>Rozwiązanie jest niepoprawne</h1>

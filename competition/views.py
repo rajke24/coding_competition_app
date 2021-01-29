@@ -6,6 +6,8 @@ from datetime import datetime
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
+
+from .decorators import team_user
 from .forms import ConfigPanelForm, SolutionForm
 import random
 from enum import Enum
@@ -33,13 +35,15 @@ def configpanel(request):
     return render(request, 'competition/configpanel.html', {"configuration": configuration})
 
 
+@team_user
 def send_solution(request, task_id):
-    #todo: check 1) user is team 2) task_id is valid id 3) team haven't done this task already
+    task = Task.objects.all().filter(id=task_id).first()
+    team = Team.objects.all().filter(team_as_user__username=request.user).first()
+    if not __is_valid_team_and_task(task, team):
+        return redirect('home')
+
     solution_status = 1
     if request.method == 'POST':
-        task = Task.objects.all().filter(id=task_id).first()  # placeholder
-        team = Team.objects.all().filter(team_as_user__username=request.user).first()
-
         solution = Solution.objects.create(task=task, team=team,
                                            content=__sanitize_solution_content(request.POST['solution']))
         solution_filename = __save_solution_to_file(solution)
@@ -50,12 +54,23 @@ def send_solution(request, task_id):
 
     configuration = Configuration.objects.all()[0]
     context = {
-        'solution_form': SolutionForm(), 
+        'solution_form': SolutionForm(),
         'configuration': configuration,
         'solution_status': solution_status,
     }
     return render(request, 'competition/send_solution.html', context)
 
+
+def __is_valid_team_and_task(task, team):
+    if task is None or team is None:
+        return False
+    team_tasks_with_statuses, _ = __get_team_tasks(team)
+    for team_task_with_status in team_tasks_with_statuses:
+        team_task = team_task_with_status['task']
+        is_finished = team_task_with_status['is_finished']
+        if team_task == task:
+            return not is_finished
+    return False
 
 def __sanitize_solution_content(content):
     return '\n'.join(content.splitlines())
