@@ -269,6 +269,7 @@ def home(request):
             team_tasks, are_all_tasks_finished = __get_team_tasks(team)
             context['tasks'] = team_tasks
             context['are_all_tasks_finished'] = are_all_tasks_finished
+            context['is_competition_started'] = __is_competition_started()
         return render(request, 'competition/home.html', context)
 
 
@@ -284,3 +285,7 @@ def __get_team_tasks(team):
             are_all_finished = False
         tasks_with_statuses.append({'task': task, 'is_finished': is_finished})
     return tasks_with_statuses, are_all_finished
+
+
+def __is_competition_started():
+    return Configuration.objects.all()[0].competition_start_time is not None

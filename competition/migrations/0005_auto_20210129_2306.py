@@ -39,8 +39,8 @@ def __create_tasks(Task, Test):
         description="Pociąg z miejscowości A do B jedzie z prędkością v1, a wraca z miejscowości B do A z prędkością v2. Obliczyć średnią prędkość na całej trasie. Uwaga: Dane wejściowe będą tak dobrane, aby wynik był liczba całkowitą. Wejście: jedna liczba całkowita t oznaczająca liczbę zestawów danych. Następnie dla każdego zestawu: dwie liczby całkowite oddzielone enterem, v1 i v2. Wyjście: składa się z t wierszy. W każdym wierszu powinna znaleźć się dokładnie jedna liczba całkowita oznaczjaca średnią prędkość"
     )
     tests_3 = [
-        Test.objects.create(task=task_3, input=r'2\n50\n50\n60\n40', output=r'50\n48'),
-        Test.objects.create(task=task_3, input=r'2\n10\n90\n30\n50\n', output=r'18\n37\n')
+        Test.objects.create(task=task_3, input=r'2\n50\n50\n60\n40\n', output=r'50\n48'),
+        Test.objects.create(task=task_3, input=r'2\n10\n90\n30\n50\n', output=r'18\n37')
     ]
     task_4 = Task.objects.create(
         description="Sprawdź czy podane słowa są palindromami. Wejście: w pierwszej linijce liczba całkowita n od 1 do 1000. W następnych linijkach n słów oddzielonych enterami. Słowo składa się wyłącznie z liter. Wyjście: n linijek. Jeśli słowo było palindromem, wypisz TAK. Jeśli nie, wypisz NIE"

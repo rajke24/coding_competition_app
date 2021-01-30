@@ -52,8 +52,10 @@
                                     <label for="task-select">Wybierz zadanie</label>
                                     <select name="tasks" id="task-select">
                                         {% for task in tasks %}
-                                            <option value="{{ task.task.id }}" {% if task.is_finished %}
-                                                    disabled {% endif %}>
+                                            <option value="{{ task.task.id }}"
+                                                    {% if task.is_finished %}
+                                                        disabled
+                                                    {% endif %}>
                                                 {{ task.task.id }} {% if task.is_finished %} (ROZWIĄZANE) {% else %}
                                                 (DO ZROBIENIA) {% endif %}
                                             </option>
@@ -62,7 +64,7 @@
                                 </div>
                                 <div>
                                     <button class="btn accept-btn" type="submit" onclick="location.href = '/solution'"
-                                            {% if are_all_tasks_finished %}
+                                            {% if are_all_tasks_finished or not is_competition_started %}
                                                 disabled="disabled" style="cursor: not-allowed;"
                                             {% endif %}>
                                         Przejdź do zadania
