@@ -20,6 +20,7 @@ def registration_successful(request, team):
     })
 
 
+@unauthenticated_user
 def register(request):
     if not __is_any_team_slot_available():
         return redirect('register-no-team-slots-available')
@@ -82,8 +83,9 @@ def __is_any_team_slot_available():
 
 
 def __save_team(team_form):
+    team_city = team_form.cleaned_data['school_city']
     team_user = User.objects.create_user(
-        username=__generate_username(), password=team_form.cleaned_data['password'])
+        username=__generate_username(team_city), password=team_form.cleaned_data['password'])
     team = team_form.save(commit=False)
     group = Group.objects.get(name="team")
     team_user.groups.add(group)
@@ -92,8 +94,20 @@ def __save_team(team_form):
     return team
 
 
-def __generate_username():
-    return "team{0}".format(Team.objects.all().count() + 1)
+def __generate_username(team_city):
+    team_city_formatted = __sanitize_team_city(team_city)
+    index = 1
+    is_username_free = False
+    username = None
+    while not is_username_free:
+        username = "{}{}".format(team_city_formatted, index)
+        is_username_free = __is_username_free(username)
+        index = index + 1
+    return username
+
+
+def __sanitize_team_city(team_city):
+    return "".join(filter(str.isalpha, team_city)).lower().replace('ł', 'l').replace('ś', 's').replace('ó', 'o').replace('ż', 'z').replace('ź', 'z').replace('ę', 'e').replace('ą', 'a').replace('ć', 'c')
 
 
 def __is_username_free(username):
@@ -110,6 +124,7 @@ def __save_participants(participant_forms, team_members, team):
 def __recreate_empty_forms(participant_forms, team_members):
     for i in range(team_members, 3):
         participant_forms[i] = ParticipantForm(prefix="participant_".format(i))
+
 
 @unauthenticated_user
 def login_page(request):
