@@ -19,4 +19,19 @@ class Migration(migrations.Migration):
             name='upload_time',
             field=models.DateTimeField(),
         ),
+        migrations.AddField(
+            model_name='configuration',
+            name='competition_start_time',
+            field=models.DateTimeField(null=True, blank=True)
+        ),
+        migrations.AddField(
+            model_name='configuration',
+            name='competition_pause_time',
+            field=models.DateTimeField(null=True, blank=True)
+        ),
+        migrations.AddField(
+            model_name='configuration',
+            name='total_pause_time_in_minutes',
+            field=models.IntegerField(default=0)
+        ),
     ]

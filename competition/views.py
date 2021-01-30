@@ -10,6 +10,7 @@ import random
 from enum import Enum
 from .models import Configuration, Task, Test, Solution, SolutionTestResult
 from users.models import Team
+from django.utils import timezone
 
 
 @judge_user
@@ -18,19 +19,36 @@ def configpanel(request):
     if request.method == 'POST':
         form = ConfigPanelForm(request.POST)
         if form.is_valid():
-            competition_status = form.cleaned_data['competition_status']
-            ranking_visibility = form.cleaned_data['ranking_visibility']
-            configuration.competition_status = competition_status
-            configuration.ranking_visibility = ranking_visibility
-            if ranking_visibility == False:
-                time = datetime.datetime.now()
-                configuration.ranking_visibility_change_time = time
+            new_competition_status = form.cleaned_data['competition_status']
+            new_ranking_visibility = form.cleaned_data['ranking_visibility']
+            old_competition_status = configuration.competition_status
+            old_ranking_visibility = configuration.ranking_visibility
+
+            if new_ranking_visibility != old_ranking_visibility:
+                if new_ranking_visibility == Configuration.RankingVisibility.INVISIBLE:  # wylaczono widocznosc rankingu
+                    configuration.ranking_visibility_change_time = timezone.now()
+                configuration.ranking_visibility = new_ranking_visibility
+
+            if new_competition_status != old_competition_status:
+                if new_competition_status == Configuration.CompetitionStatus.ACTIVE:
+                    if configuration.competition_start_time is None:  # rozpoczynamy zawody
+                        configuration.competition_start_time = timezone.now()
+                    else:  # odpauzowano zawody
+                        pause_duration = timezone.now() - configuration.competition_pause_time
+                        configuration.total_pause_time_in_minutes += __convert_timedelta_to_minutes(pause_duration)
+                else:  # zapauzowano zawody
+                    configuration.competition_pause_time = timezone.now()
+                configuration.competition_status = new_competition_status
             configuration.save()
             return redirect('home')
     else:
         form = ConfigPanelForm()
 
     return render(request, 'competition/configpanel.html', {"configuration": configuration})
+
+
+def __convert_timedelta_to_minutes(timedelta):
+    return (timedelta.days * 1440) + (timedelta.seconds // 60) + (timedelta.microseconds // 60_000_000)
 
 
 @team_user
@@ -47,19 +65,20 @@ def send_solution(request, task_id):
         solution = request.POST['solution']
         if competition_status != 0:
             solution = Solution.objects.create(task=task, team=team,
-                                               content=__sanitize_solution_content(
-                                               solution),
-                                               upload_time=datetime.datetime.now())
+                                               content=__sanitize_solution_content(solution),
+                                               upload_time=__get_offseted_upload_time(timezone.now()))
             solution_filename = __save_solution_to_file(solution)
             solution_status = __run_tests(solution_filename, task, solution)
             __delete_solution_file(solution_filename)
             solution.solution_status = solution_status
             solution.save()
-        else: 
+        else:
             solution_status = 1
 
-        return render(request, 'competition/send_solution.html', context = {'solution_form': SolutionForm(initial= {'solution': solution}), 'task': task, 'solution_status': solution_status, 'competition_status': competition_status})
-    
+        return render(request, 'competition/send_solution.html',
+                      context={'solution_form': SolutionForm(initial={'solution': solution.content}), 'task': task,
+                               'solution_status': solution_status, 'competition_status': competition_status})
+
     context = {
         'solution_form': SolutionForm(),
         'task': task,
@@ -67,6 +86,13 @@ def send_solution(request, task_id):
         'competition_status': 1,
     }
     return render(request, 'competition/send_solution.html', context)
+
+
+def __get_offseted_upload_time(upload_time):
+    time_offset = Configuration.objects.all()[0].total_pause_time_in_minutes
+    if time_offset is not None:
+        return upload_time - datetime.timedelta(minutes=time_offset)
+    return upload_time
 
 
 def __is_valid_team_and_task(task, team):
@@ -209,11 +235,11 @@ def __calculate_total_time(team_solutions):
 
 
 def __get_competition_start_time():
-    return datetime.datetime(year=2021, month=1, day=29, hour=15, minute=30, tzinfo=datetime.timezone.utc)  # todo
+    return Configuration.objects.all()[0].competition_start_time
 
 
 def __calculate_time(difference_in_seconds, incorrect_solutions_count):
-    incorrect_solution_penalty = 1200  # 20 minut = 720 sekund
+    incorrect_solution_penalty = 1200  # 20 minut = 1200 sekund
     return difference_in_seconds + (incorrect_solutions_count * incorrect_solution_penalty)
 
 

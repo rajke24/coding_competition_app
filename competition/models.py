@@ -53,6 +53,9 @@ class Configuration(models.Model):
     competition_status = models.IntegerField(choices=CompetitionStatus.choices, default=CompetitionStatus.INACTIVE)
     ranking_visibility = models.IntegerField(choices=RankingVisibility.choices, default=RankingVisibility.VISIBLE)
     ranking_visibility_change_time = models.DateTimeField(null=True, blank=True)
+    competition_start_time = models.DateTimeField(null=True, blank=True)
+    competition_pause_time = models.DateTimeField(null=True, blank=True)
+    total_pause_time_in_minutes = models.IntegerField(default=0)
 
     def __str__(self):
         return "Configuration"
