@@ -41,23 +41,33 @@ def send_solution(request, task_id):
         return redirect('home')
 
     solution_status = 1
-    if request.method == 'POST':
-        solution = Solution.objects.create(task=task, team=team,
-                                           content=__sanitize_solution_content(request.POST['solution']),
-                                           upload_time=datetime.datetime.now())
-        solution_filename = __save_solution_to_file(solution)
-        solution_status = __run_tests(solution_filename, task, solution)
-        print(solution_status)
-        __delete_solution_file(solution_filename)
-        solution.solution_status = solution_status
-        solution.save()
-
     configuration = Configuration.objects.all()[0]
+    if request.method == 'POST':
+        competition_status = configuration.competition_status
+        if competition_status != 0:
+            solution = Solution.objects.create(task=task, team=team,
+                                               content=__sanitize_solution_content(
+                                               request.POST['solution']),
+                                               upload_time=datetime.datetime.now())
+            solution_filename = __save_solution_to_file(solution)
+            solution_status = __run_tests(solution_filename, task, solution)
+            __delete_solution_file(solution_filename)
+            solution.solution_status = solution_status
+            solution.save()
+        else: 
+            solution_status = 1
+        
+        request.session['solution_status'] = solution_status
+        request.session['competition_status'] = competition_status
+        return redirect(f'/solution/{task_id}/')
     context = {
         'solution_form': SolutionForm(),
-        'configuration': configuration,
-        'solution_status': solution_status,
+        'task': task,
     }
+    request.session['competition_status'] = configuration.competition_status
+    if 'solution_status' not in request.session:
+        request.session['solution_status'] = solution_status
+
     return render(request, 'competition/send_solution.html', context)
 
 

@@ -15,8 +15,8 @@
 </head>
 <body>
 <div class="wrapper">
-    {{ solution_status|json_script:'solution_status'}}
-    {{ configuration.competition_status|json_script:'competition_status'}}
+    {{ request.session.solution_status|json_script:'solution_status'}}
+    {{ request.session.competition_status|json_script:'competition_status'}}
     <div class="bg-modal">
         <div class="modal confirmation-modal">
             <h1>Czy na pewno chcesz przesłać rozwiązanie ?</h1>
@@ -27,7 +27,7 @@
         </div>
         <div class="modal sending-error-modal">
             <h1>Błąd przesyłania</h1>
-            {% if configuration.competition_status == 0 %}
+            {% if request.session.competition_status == 0 %}
             <p>Zawody są nieaktywne</p>
             {% else %}
             <p>Rozwiązanie użytkownia jest puste</p>
@@ -46,20 +46,30 @@
             <button class="btn accept-btn" onclick="closeModal('.wrong-answer-modal')">Zamknij</button>
         </div>
     </div>
-    <div class="panel">
-        <form id="solution-form" method="POST" action="">
-            {% csrf_token %}
-            {{ solution_form }}
-            <input id="send-btn" class="btn accept-btn" type="button" value="Prześlij rozwiązanie" onClick="openModal('.confirmation-modal')">
-        </form>
+    <h1>Zadanie {{ task.id }}</h1>
+    <div class="panel task-panel">
+        <div class="task-description">
+            <h4>Treść zadania</h4>
+            {{ task.description }}
+        </div>
+        <div class="task-solution">
+            <form id="solution-form" method="POST" action="">
+                {% csrf_token %}
+                {{ solution_form }}
+                <input id="send-btn" class="btn accept-btn" type="button" value="Prześlij rozwiązanie" onClick="openModal('.confirmation-modal')">
+            </form>
+        </div>
     </div>
 </div>
 </body>
 <script>
     const solutionStatus = JSON.parse(document.getElementById('solution_status').textContent);
     const competitionStatus = JSON.parse(document.getElementById('competition_status').textContent);
-    console.log(solutionStatus);
     document.addEventListener('DOMContentLoaded', function() {
+        if (competitionStatus === 0) {
+            openModal('.sending-error-modal');
+            return;
+        }
         if (solutionStatus !== 1) {
             document.querySelector('.bg-modal').style.display = 'flex';
         }
@@ -70,6 +80,7 @@
             modal = document.querySelector('.wrong-answer-modal')
             modalParagraph = modal.getElementsByTagName('p')[0]
             modal.style.display = 'flex';
+
             if (solutionStatus === 3) {
                modalParagraph.textContent = "Przyczyna: Niepoprawna odpowiedź";
             }
@@ -100,7 +111,7 @@
     const sendSolution = () => {
         const solutionContent = document.getElementById('id_solution').value;
         document.querySelector('.confirmation-modal').style.display = 'none';
-        if (solutionContent.length === 0 || !competitionStatus) {
+        if (solutionContent.length === 0) {
             openModal('.sending-error-modal');
         }
         else {

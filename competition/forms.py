@@ -8,4 +8,4 @@ class ConfigPanelForm(forms.Form):
 
 
 class SolutionForm(forms.Form):
-    solution = forms.CharField(widget=forms.Textarea)
+    solution = forms.CharField(widget=forms.Textarea, label="Rozwiązanie")
