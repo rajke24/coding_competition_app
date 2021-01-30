@@ -44,10 +44,11 @@ def send_solution(request, task_id):
     configuration = Configuration.objects.all()[0]
     if request.method == 'POST':
         competition_status = configuration.competition_status
+        solution = request.POST['solution']
         if competition_status != 0:
             solution = Solution.objects.create(task=task, team=team,
                                                content=__sanitize_solution_content(
-                                               request.POST['solution']),
+                                               solution),
                                                upload_time=datetime.datetime.now())
             solution_filename = __save_solution_to_file(solution)
             solution_status = __run_tests(solution_filename, task, solution)
@@ -57,12 +58,13 @@ def send_solution(request, task_id):
         else: 
             solution_status = 1
 
-        return render(request, 'competition/send_solution.html', context = {'solution_form': SolutionForm(), 'task': task, 'solution_status': solution_status, 'competition_status': competition_status})
+        return render(request, 'competition/send_solution.html', context = {'solution_form': SolutionForm(initial= {'solution': solution}), 'task': task, 'solution_status': solution_status, 'competition_status': competition_status})
+    
     context = {
         'solution_form': SolutionForm(),
         'task': task,
         'solution_status': solution_status,
-        'competition_status': 1
+        'competition_status': 1,
     }
     return render(request, 'competition/send_solution.html', context)
 
