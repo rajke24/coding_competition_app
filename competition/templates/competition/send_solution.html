@@ -27,7 +27,7 @@
         </div>
         <div class="modal sending-error-modal">
             <h1>Błąd przesyłania</h1>
-            {% if request.session.competition_status == 0 %}
+            {% if competition_status == 0 %}
             <p>Zawody są nieaktywne</p>
             {% else %}
             <p>Rozwiązanie użytkownia jest puste</p>
