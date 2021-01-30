@@ -10,6 +10,7 @@ class Team(models.Model):
     guardian_first_name = models.CharField(max_length=64, blank=True, verbose_name="Imię opiekuna")
     guardian_last_name = models.CharField(max_length=64, blank=True, verbose_name="Nazwisko opiekuna")
     school_name = models.CharField(max_length=100, verbose_name="Nazwa szkoły *")
+    school_city = models.CharField(max_length=100, verbose_name="Miasto *")
 
     def __str__(self):
         return self.team_as_user.username

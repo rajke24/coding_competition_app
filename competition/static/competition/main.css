@@ -230,10 +230,6 @@ input:checked + .slider:before {
     font-size: 14px;
 }
 
-.register-panel #id_team-school_name {
-    width: 26em;
-}
-
 .participant-form-outer {
     display: inline-flex;
     justify-content: space-around;

@@ -3,6 +3,7 @@ from django.core.validators import MinLengthValidator, MaxLengthValidator
 
 from .models import Participant, Team
 
+
 class ParticipantForm(forms.ModelForm):
     class Meta:
         model = Participant
@@ -45,4 +46,9 @@ class TeamForm(forms.ModelForm):
         password_confirm_data = cleaned_data.get("password_confirm")
         if password_data != password_confirm_data:
             self.add_error('password_confirm', 'Hasła się nie zgadzają')
+
+        city_data = cleaned_data.get("school_city")
+        only_letters_city = "".join(filter(str.isalpha, city_data))
+        if len(only_letters_city) == 0:
+            self.add_error('school_city', 'Niepoprawna nazwa miasta')
         return cleaned_data
