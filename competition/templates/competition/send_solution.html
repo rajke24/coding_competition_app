@@ -15,8 +15,8 @@
 </head>
 <body>
 <div class="wrapper">
-    {{ request.session.solution_status|json_script:'solution_status'}}
-    {{ request.session.competition_status|json_script:'competition_status'}}
+    {{ solution_status|json_script:'solution_status'}}
+    {{ competition_status|json_script:'competition_status'}}
     <div class="bg-modal">
         <div class="modal confirmation-modal">
             <h1>Czy na pewno chcesz przesłać rozwiązanie ?</h1>

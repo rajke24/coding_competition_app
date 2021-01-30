@@ -56,18 +56,14 @@ def send_solution(request, task_id):
             solution.save()
         else: 
             solution_status = 1
-        
-        request.session['solution_status'] = solution_status
-        request.session['competition_status'] = competition_status
-        return redirect(f'/solution/{task_id}/')
+
+        return render(request, 'competition/send_solution.html', context = {'solution_form': SolutionForm(), 'task': task, 'solution_status': solution_status, 'competition_status': competition_status})
     context = {
         'solution_form': SolutionForm(),
         'task': task,
+        'solution_status': solution_status,
+        'competition_status': 1
     }
-    request.session['competition_status'] = configuration.competition_status
-    if 'solution_status' not in request.session:
-        request.session['solution_status'] = solution_status
-
     return render(request, 'competition/send_solution.html', context)
 
 
