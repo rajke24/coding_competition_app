@@ -26,7 +26,7 @@ def configpanel(request):
 
             if new_ranking_visibility != old_ranking_visibility:
                 if new_ranking_visibility == Configuration.RankingVisibility.INVISIBLE:  # wylaczono widocznosc rankingu
-                    configuration.ranking_visibility_change_time = timezone.now()
+                    configuration.ranking_visibility_change_time = __get_offseted_time(timezone.now())
                 configuration.ranking_visibility = new_ranking_visibility
 
             if new_competition_status != old_competition_status:
@@ -66,7 +66,7 @@ def send_solution(request, task_id):
         if competition_status != 0:
             solution = Solution.objects.create(task=task, team=team,
                                                content=__sanitize_solution_content(solution),
-                                               upload_time=__get_offseted_upload_time(timezone.now()))
+                                               upload_time=__get_offseted_time(timezone.now()))
             solution_filename = __save_solution_to_file(solution)
             solution_status = __run_tests(solution_filename, task, solution)
             __delete_solution_file(solution_filename)
@@ -88,11 +88,11 @@ def send_solution(request, task_id):
     return render(request, 'competition/send_solution.html', context)
 
 
-def __get_offseted_upload_time(upload_time):
+def __get_offseted_time(time_to_offset):
     time_offset = Configuration.objects.all()[0].total_pause_time_in_minutes
     if time_offset is not None:
-        return upload_time - datetime.timedelta(minutes=time_offset)
-    return upload_time
+        return time_to_offset - datetime.timedelta(minutes=time_offset)
+    return time_to_offset
 
 
 def __is_valid_team_and_task(task, team):
