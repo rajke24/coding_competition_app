@@ -11,6 +11,8 @@
             href="{% static 'competition/main.css' %}"
             type="text/css"
     />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
     <title>Document</title>
 </head>
 <body>
@@ -22,6 +24,12 @@
         <p>Widoczność aktualnego rankingu została wyłączona</p>
     {% endif %}
     <section class="panel ranking-panel">
+        <div class="home-btn">
+            <a href="/">
+                <span>strona główna</span>
+                <i class="material-icons">home</i>
+            </a>
+        </div>
         <div class="sorting">
             Sortuj według pozycji:
             <a href="#" onclick="sortTable('asc')">rosnąco</a>

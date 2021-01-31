@@ -76,7 +76,7 @@ def send_solution(request, task_id):
             solution_status = 1
 
         return render(request, 'competition/send_solution.html',
-                      context={'solution_form': SolutionForm(initial={'solution': solution.content}), 'task': task,
+                      context={'solution_form': SolutionForm(initial={'solution': solution}), 'task': task,
                                'solution_status': solution_status, 'competition_status': competition_status})
 
     context = {

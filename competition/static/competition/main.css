@@ -68,6 +68,7 @@ h4 {
     background:var(--nice-black);
 }
 .panel {
+    position: relative;
     background: var(--ghost-white);
     box-shadow: var(--light-shadow);
     display: flex;
@@ -96,6 +97,7 @@ h4 {
 }
 
 .ranking-panel {
+    padding-top: 80px;
     width: 80%;
     height: 550px;
 }
@@ -190,6 +192,37 @@ input:checked + .slider:before {
 .cancel-btn:hover {
     background: var(--light-orange);
     color: var(--ghost-white);
+}
+
+.home-btn a{
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    color: var(--megalight-blue);
+    transition: all 0.4s;
+    display: flex;
+    align-items: center;
+}
+
+.home-btn a:hover {
+    color: var(--light-blue);
+}
+
+.home-btn a i {
+    font-size: 45px;
+}
+
+.home-btn a span {
+    opacity: 0;
+    display: inline-block;
+    font-size: 15px;
+    transition: 0.4s;
+    transform: translateX(10px);
+}
+
+.home-btn a:hover span {
+    opacity: 1;
+    transform: translateX(-10px);
 }
 
 @media only screen and (min-width: 1100px) {
