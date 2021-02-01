@@ -36,13 +36,13 @@
         </div>
         <div class="modal correct-answer-modal">
             <h1>Rozwiązanie jest poprawne</h1>
-            <i class="material-icons">check</i>
+            <i id="check-icon" class="material-icons">check</i>
             <button class="btn accept-btn" onclick="closeModal('.correct-answer-modal'); location.reload(); return false;">Zamknij</button>
         </div>
         <div class="modal wrong-answer-modal">
             <h1>Rozwiązanie jest niepoprawne</h1>
             <p>Przyczyna: Przekroczono czas wykonania</p>
-            <i class="material-icons">clear</i>
+            <i id="clear-icon" class="material-icons">clear</i>
             <button class="btn accept-btn" onclick="closeModal('.wrong-answer-modal')">Zamknij</button>
         </div>
     </div>
@@ -51,12 +51,12 @@
         <div class="home-btn">
             <a href="/">
                 <span>strona główna</span>
-                <i class="material-icons">home</i>
+                <i id="home-icon" class="material-icons">home</i>
             </a>
         </div>
         <div class="task-description">
             <h4>Treść zadania</h4>
-            {{ task.description }}
+            <p>{{ task.description }}</p>
         </div>
         <div class="task-solution">
             <form id="solution-form" method="POST" action="">

@@ -72,6 +72,7 @@ def send_solution(request, task_id):
             __delete_solution_file(solution_filename)
             solution.solution_status = solution_status
             solution.save()
+            solution = solution.content
         else:
             solution_status = 1
 
